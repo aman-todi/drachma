@@ -1,0 +1,23 @@
+# Drachma v1 spec
+
+## Destination
+
+A written product/architecture spec for Drachma v1: a paid, multi-tenant personal-finance app that aggregates Plaid data (bank, credit card, 401k, brokerage) and answers questions through a web dashboard with in-app chat and a remote, OAuth-gated MCP server for external personal assistants (Claude, ChatGPT). The spec is handed off to a build session once every ticket below is resolved.
+
+## Notes
+
+- **Domain**: see `CONTEXT.md` at the repo root for vocabulary (Connection, Token vault, Mirror, Curated view, Curated tool, Custom query tool, Connected assistant, Model provider, Tier, Usage unit). See `docs/adr/0001-supabase-postgres-over-aws-rds.md` for why Postgres lives on Supabase despite the app being AWS-hosted.
+- **Architecture shell already settled** (not re-litigated by tickets below): Python/FastAPI backend; Supabase Postgres + Auth; React + Vite SPA; both the API and the sync worker run as AWS ECS Fargate services (one container image, two task definitions); a shared Curated-tool analytics layer (`spend_between`, `recurring_charges`, `top_vendors`, `net_worth`, `account_balance`) plus a views-scoped Custom query tool, both exposed identically to the MCP server, the in-app chat, and the web dashboard; the MCP server is OAuth-gated and is the primary surface; the in-app chat calls a swappable Model provider (DeepSeek V4 Flash initially — keep this integration loosely coupled so the provider can be swapped without touching calling code); two paid Tiers ($10/mo for 10 Connections, $20/mo for 20 Connections) share one Usage-unit quota tracked via atomic counters in the same Supabase Postgres database; Stripe handles billing; v1 is USD-only.
+- **Skills every session should consult**: call the Skill tool for `grilling` and `domain-modeling` on any decision ticket (challenge terms against `CONTEXT.md` as they come up); call the Skill tool for `research` on any research ticket.
+
+## Decisions so far
+
+## Not yet specified
+
+- Dashboard and in-app chat UI/IA — will sharpen into prototype tickets once the tool layer and MCP schema (ticket 06) are settled.
+- Exact MCP tool JSON schemas for each Curated tool and the Custom query tool.
+- Test/QA plan for the analytics layer and the sync worker.
+
+## Out of scope
+
+- Ads integration and any Tier/pricing changes beyond the two Tiers set here — explicitly deferred to after v1 launch and real usage feedback.
