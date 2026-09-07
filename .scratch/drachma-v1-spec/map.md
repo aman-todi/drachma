@@ -12,6 +12,9 @@ A written product/architecture spec for Drachma v1: a paid, multi-tenant persona
 
 ## Decisions so far
 
+- [Plaid production access](issues/05-plaid-production-access.md): No blanket approval — Transactions, Investments, Liabilities, and Balance are each requested/billed separately, Recurring Transactions is a further add-on. Requires a passing Sandbox integration and a live privacy policy URL at submission (blocks on [Data-deletion mechanics](issues/03-data-deletion-mechanics.md)), plus a security questionnaire for OAuth institutions (Chase, BofA, Wells Fargo). Runs capped until full approval; typical review is a couple of business days once the profile is complete.
+- [MCP OAuth flow](issues/06-mcp-oauth-flow.md): Dynamic Client Registration isn't required — a pre-registered OAuth client per assistant (Claude, ChatGPT) is spec-compliant. Token flow is OAuth 2.1 + PKCE with a mandatory `resource` parameter (RFC 8707) and mandatory refresh-token rotation; the server must expose OAuth 2.0 Protected Resource Metadata (RFC 9728). Supabase Auth can act as the authorization server since it already exposes OIDC discovery, as long as the MCP server publishes the RFC 9728 document pointing at it.
+
 ## Not yet specified
 
 - Dashboard and in-app chat UI/IA — will sharpen into prototype tickets once the tool layer and MCP schema (ticket 06) are settled.
