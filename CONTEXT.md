@@ -42,6 +42,20 @@ _Avoid_: MCP client (when the user, not the protocol, is meant).
 The swappable interface powering the in-app chat's own reasoning (initially DeepSeek V4 Flash). Distinct from a Connected assistant's model, which this project never chooses.
 _Avoid_: The LLM, AI provider (bare).
 
+### Account lifecycle
+
+**Account record**:
+The user's profile, Tier, and billing state — distinct from the Mirror and Token vault, which hold Plaid-sourced data instead.
+_Avoid_: Account shell, profile (bare).
+
+**Closure window**:
+The 48-hour period after an account-closure request during which the account record and Mirror survive (soft-deleted, Connections' tokens already revoked) and Reactivation is still possible, before permanent purge.
+_Avoid_: Grace period, undo window.
+
+**Reactivation**:
+The explicit, user-confirmed action that cancels a pending account closure inside the Closure window. Logging back in alone does not trigger it.
+_Avoid_: Recovery, undelete.
+
 ### Billing & usage
 
 **Tier**:
